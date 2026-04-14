@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -21,40 +21,103 @@
       <header class="site-header">
         <img src="img/loreal-logo.png" alt="L'Oréal Logo" class="logo" />
         <h1 class="site-title">Smart Routine &amp; Product Advisor</h1>
+        <p class="site-subtitle">
+          Discover your perfect beauty routine with AI-powered recommendations
+        </p>
       </header>
 
       <!-- Category Filter -->
       <div class="search-section">
-        <select id="categoryFilter">
-          <option value="" disabled selected>Choose a Category</option>
-          <option value="cleanser">Cleansers</option>
-          <option value="moisturizer">Moisturizers & Treatments</option>
-          <option value="haircare">Haircare</option>
-          <option value="makeup">Makeup</option>
-          <option value="hair color">Hair Color</option>
-          <option value="hair styling">Hair Styling</option>
-          <option value="men's grooming">Men's Grooming</option>
-          <option value="suncare">Suncare</option>
-          <option value="fragrance">Fragrance</option>
-        </select>
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label for="categoryFilter" class="filter-label"
+              >Select a Category:</label
+            >
+            <select id="categoryFilter">
+              <option value="all" selected>All Categories</option>
+              <option value="cleanser">Cleansers</option>
+              <option value="moisturizer">Moisturizers & Treatments</option>
+              <option value="haircare">Haircare</option>
+              <option value="makeup">Makeup</option>
+              <option value="hair color">Hair Color</option>
+              <option value="hair styling">Hair Styling</option>
+              <option value="men's grooming">Men's Grooming</option>
+              <option value="suncare">Suncare</option>
+              <option value="fragrance">Fragrance</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="productSearch" class="filter-label"
+              >Search Products:</label
+            >
+            <input
+              id="productSearch"
+              class="product-search-input"
+              type="text"
+              placeholder="Search by product name, brand, or keyword..."
+              autocomplete="off"
+            />
+          </div>
+        </div>
+
+        <div class="filter-footer">
+          <p id="resultsCount" class="results-count" aria-live="polite">
+            0 products shown
+          </p>
+          <button type="button" id="resetFilters" class="reset-filters-btn">
+            Reset Filters
+          </button>
+        </div>
       </div>
 
       <!-- Products Grid -->
-      <div id="productsContainer" class="products-grid"></div>
+      <div
+        id="productsContainer"
+        class="products-grid"
+        aria-live="polite"
+      ></div>
 
-      <!-- Selected Products -->
-      <div class="selected-products">
-        <h2>Selected Products</h2>
-        <div id="selectedProductsList"></div>
-        <button id="generateRoutine" class="generate-btn">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Routine
-        </button>
-      </div>
+      <!-- Selected Products Section -->
+      <section class="selected-products-section">
+        <div class="selected-products">
+          <div class="selected-header">
+            <h2>Your Selected Products</h2>
+            <span class="selected-count" id="selectedCount" aria-live="polite"
+              >0 selected</span
+            >
+          </div>
+          <div
+            id="selectedProductsList"
+            class="selected-list"
+            role="list"
+          ></div>
+          <div class="selected-actions">
+            <button id="clearAllBtn" class="clear-btn" disabled>
+              Clear All
+            </button>
+            <button id="generateRoutine" class="generate-btn" disabled>
+              <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Routine
+            </button>
+          </div>
+        </div>
+      </section>
 
       <!------- Chat Area ------->
       <section class="chatbox">
         <h2>Let's Build Your Routine</h2>
-        <div id="chatWindow" class="chat-window"></div>
+        <div
+          id="chatWindow"
+          class="chat-window"
+          role="log"
+          aria-live="polite"
+          aria-relevant="additions"
+        >
+          <div class="chat-placeholder">
+            <i class="fa-solid fa-comments"></i>
+            <p>Select products and generate your routine to start chatting</p>
+          </div>
+        </div>
 
         <form id="chatForm" class="chat-form">
           <label for="userInput" class="visually-hidden">Message</label>
@@ -65,8 +128,9 @@
             placeholder="Ask me about products or routines…"
             autocomplete="off"
             required
+            disabled
           />
-          <button type="submit" id="sendBtn">
+          <button type="submit" id="sendBtn" disabled>
             <i class="fa-solid fa-paper-plane"></i>
             <span class="visually-hidden">Send</span>
           </button>
@@ -85,8 +149,49 @@
       </footer>
     </div>
 
+    <!-- Product Description Modal -->
+    <div
+      id="productModal"
+      class="modal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalProductName"
+      aria-describedby="modalProductDescription"
+    >
+      <div class="modal-content">
+        <button class="modal-close" aria-label="Close product details">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div class="modal-body">
+          <img id="modalProductImage" src="" alt="" class="modal-image" />
+          <div class="modal-info">
+            <h2 id="modalProductName"></h2>
+            <p id="modalProductBrand" class="modal-brand"></p>
+            <p id="modalProductCategory" class="modal-category"></p>
+            <div id="modalProductDescription" class="modal-description"></div>
+            <button id="modalAddBtn" class="modal-add-btn">
+              <i class="fa-solid fa-plus"></i> Add to Routine
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div
+      id="loadingOverlay"
+      class="loading-overlay"
+      aria-hidden="true"
+      role="status"
+      aria-live="assertive"
+    >
+      <div class="spinner"></div>
+      <p>Generating your personalized routine...</p>
+    </div>
+
     <!-- secrets.js can be removed when using Cloudflare Workers for API requests -->
-    <script src="secrets.js"></script>
-    <script src="script.js"></script>
+    <script src="secrets.js?v=3"></script>
+    <script src="script.js?v=3"></script>
   </body>
 </html>
